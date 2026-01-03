@@ -62,15 +62,15 @@ services:
   #     - PMA_PASSWORD=secret
   #   networks:
   #     - laravel_enviroment
-  # redis:
-  #   image: redis:alpine
-  #   container_name: redis_laravel_enviroment
-  #   restart: unless-stopped
-  #   ports:
-  #     - 6379:6379
-  #   networks:
-  #     - laravel_enviroment
-  #   command: redis-server --appendonly yes --replica-read-only no
+  redis:
+    image: redis:alpine
+    container_name: redis_laravel_enviroment
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    networks:
+      - laravel_enviroment
+    command: redis-server --appendonly yes --replica-read-only no
 
   composer:
     build:
@@ -110,5 +110,20 @@ services:
     ports:
       - 1025:1025
       - 8025:8025
+    networks:
+      - laravel_enviroment
+
+# Reverb Service
+  reverb:
+    build:
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
+    volumes:
+      - ./src:/var/www/html:delegated
+    working_dir: /var/www/html
+    entrypoint: ["php", "artisan", "reverb:start"]
+    container_name: reverb_laravel_enviroment
+    depends_on:
+      - php
     networks:
       - laravel_enviroment
