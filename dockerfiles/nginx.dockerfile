@@ -10,3 +10,7 @@ FROM nginx:stable-alpine
  WORKDIR /var/www/html
  
  COPY src .
+
+RUN apk update && apk add --no-cache nodejs npm
+
+RUN npm install
