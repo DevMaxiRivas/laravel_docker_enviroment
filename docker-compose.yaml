@@ -104,6 +104,21 @@ services:
     entrypoint: [ "php", "artisan", "schedule:work" ]
     networks:
       - laravel_enviroment
+
+  #Laravel Queue Worker
+  queue:
+    build:
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
+    container_name: queue_laravel_enviroment
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: [ "php", "artisan", "queue:work" ]
+    depends_on:
+      - mysql
+    networks:
+      - laravel_enviroment
   mailhog:
     image: mailhog/mailhog:latest
     container_name: mailhog_laravel_enviroment
